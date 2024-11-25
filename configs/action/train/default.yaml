@@ -1,0 +1,5 @@
+batch_size: 128
+epochs: 175
+best_model_metric:
+  metric: evaluation/mae
+  strategy: min

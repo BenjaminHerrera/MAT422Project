@@ -1,0 +1,16 @@
+defaults:
+  - ../default
+
+max_sweep_count: 1000
+execution_values:
+  slurm_output: ""
+  gpu_type: ""
+  gpu_count: ""
+  partition: ""
+  qos: ""
+  use_wandb: "${use_wandb}"
+  execution_time: ""
+  config_name: ${config_name}
+  batch_size: ${action.train.sweep.batch_size}
+  unique_port: ${random:10000, 60000}
+  save_folder: train_sweep

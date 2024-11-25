@@ -1,0 +1,33 @@
+dataset: PalayDataset
+base_source_path: "/scratch/${env:USER, default_user}/datasets/palay/source/"
+components:
+  key:
+    component: PalayKeyComponent
+    args:
+      source_path: "${dataset.base_source_path}/palay_yield_new.csv"
+  features:
+    - component: AFFGDPComponent
+      args:
+        source_path: "${dataset.base_source_path}/quarterly_gdp.csv"
+        history_spread: 1
+    - component: ElNinoSSTComponent
+      args:
+        source_path: "${dataset.base_source_path}/el_nino_sst.csv"
+        history_spread: 1
+    - component: AreaHarvestedComponent
+      args:
+        source_path: "${dataset.base_source_path}/area_harvested_new.csv"
+        history_spread: 1
+        include_unknown_period: true
+  labels:
+    - component: PalayYieldComponent
+      args:
+        source_path: "${dataset.base_source_path}/palay_yield_new.csv"
+        history_spread: 0
+encoding: label
+region_key: province
+state_version: false
+split_args:
+  by_year: true
+  train_size: 0.6
+  valid_size: 0.2

@@ -1,0 +1,26 @@
+defaults:
+  - _self_
+  - action/compile: default
+  - action/pre_process_analysis: default
+  - action/train/sweep: default
+  - action/train/single: default
+  - action/train/multiple: default
+  - action/post_process_analysis: default
+  - criterion: mse
+  - dataset: palay_instance_6_no_sst
+  - evaluation: default
+  - model: fcnn/fcnn1
+  - optimizer: adam1
+  - scheduler: step_lr
+  - override hydra/hydra_logging: disabled
+  - override hydra/job_logging: disabled
+
+config_name: ${hydra:job.config_name}
+output_path: "/scratch/${env:USER, default_user}/projects/palay/results/${config_name}/"
+dataset_path: "${output_path}/dataset_compilation___1"
+use_wandb: false
+
+hydra:
+  output_subdir: null
+  run:
+    dir: .

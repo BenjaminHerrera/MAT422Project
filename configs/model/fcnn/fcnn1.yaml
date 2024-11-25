@@ -1,0 +1,4 @@
+model: fcnn
+args:
+  hidden_sizes: [30, 40, 50]
+  dropout_rate: 0.01

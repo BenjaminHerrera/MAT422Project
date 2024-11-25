@@ -1,0 +1,7 @@
+target_analysis_path: ${output_path}/multiple_runs
+geo_data:
+  geojson_url: https://raw.githubusercontent.com/macoymejia/geojsonph/master/Province/Provinces.json
+  area_key: ${dataset.region_key}
+  additional_mapping: 
+    "Cotabato (North Cotabato)": North Cotabato
+    "Davao de Oro (Compostela Valley)": Compostela Valley

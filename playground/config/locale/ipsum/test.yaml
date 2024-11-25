@@ -1,0 +1,5 @@
+defaults:
+  - ../default
+
+new_value: NOOOOO
+test_value: ${locale.ipsum.higher_value}

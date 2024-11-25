@@ -1,0 +1,185 @@
+{
+    "config_name": "${hydra:job.config_name}",
+    "output_path": "/scratch/${env:USER, default_user}/projects/palay/results/${config_name}/",
+    "dataset_path": "${output_path}/dataset_compilation___1",
+    "use_wandb": false,
+    "action": {
+        "compile": {},
+        "pre_process_analysis": {
+            "dataset_path": "${output_path}/dataset_compilation___1",
+            "specifics": {
+                "regional_col_name": [
+                    "Province"
+                ]
+            },
+            "plot_sizes": {
+                "overtime": [
+                    40,
+                    24
+                ],
+                "distribution": [
+                    10,
+                    6
+                ]
+            },
+            "analysis": {
+                "overtime": true,
+                "distribution": true
+            }
+        },
+        "train": {
+            "sweep": {
+                "": {
+                    "": {
+                        "": {
+                            "batch_size": 128,
+                            "epochs": 175,
+                            "best_model_metric": {
+                                "metric": "evaluation/mae",
+                                "strategy": "min"
+                            }
+                        }
+                    }
+                },
+                "max_sweep_count": 1000,
+                "execution_values": {
+                    "slurm_output": "",
+                    "gpu_type": "",
+                    "gpu_count": "",
+                    "partition": "",
+                    "qos": "",
+                    "use_wandb": "${use_wandb}",
+                    "execution_time": "",
+                    "config_name": "${config_name}",
+                    "batch_size": "${action.train.sweep.batch_size}",
+                    "unique_port": "${random:10000, 60000}",
+                    "save_folder": "train_sweep"
+                }
+            },
+            "single": {
+                "": {
+                    "": {
+                        "": {
+                            "batch_size": 128,
+                            "epochs": 175,
+                            "best_model_metric": {
+                                "metric": "evaluation/mae",
+                                "strategy": "min"
+                            }
+                        }
+                    }
+                }
+            },
+            "multiple": {
+                "": {
+                    "": {
+                        "": {
+                            "batch_size": 128,
+                            "epochs": 175,
+                            "best_model_metric": {
+                                "metric": "evaluation/mae",
+                                "strategy": "min"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "post_process_analysis": {
+            "target_analysis_path": "${output_path}/multiple_runs",
+            "geo_data": {
+                "geojson_url": "https://raw.githubusercontent.com/macoymejia/geojsonph/master/Province/Provinces.json",
+                "area_key": "${dataset.region_key}",
+                "additional_mapping": {
+                    "Cotabato (North Cotabato)": "North Cotabato",
+                    "Davao de Oro (Compostela Valley)": "Compostela Valley"
+                }
+            }
+        }
+    },
+    "criterion": {
+        "loss": "MSELoss"
+    },
+    "dataset": {
+        "dataset": "PalayDataset",
+        "base_source_path": "/scratch/${env:USER, default_user}/datasets/palay/source/",
+        "components": {
+            "key": {
+                "component": "PalayKeyComponent",
+                "args": {
+                    "source_path": "${dataset.base_source_path}/palay_yield_new.csv"
+                }
+            },
+            "features": [
+                {
+                    "component": "AFFGDPComponent",
+                    "args": {
+                        "source_path": "${dataset.base_source_path}/quarterly_gdp.csv",
+                        "history_spread": 4
+                    }
+                },
+                {
+                    "component": "ElNinoSSTComponent",
+                    "args": {
+                        "source_path": "${dataset.base_source_path}/el_nino_sst.csv",
+                        "history_spread": 4
+                    }
+                },
+                {
+                    "component": "AreaHarvestedComponent",
+                    "args": {
+                        "source_path": "${dataset.base_source_path}/area_harvested_new.csv",
+                        "history_spread": 4,
+                        "include_unknown_period": true
+                    }
+                }
+            ],
+            "labels": [
+                {
+                    "component": "PalayYieldComponent",
+                    "args": {
+                        "source_path": "${dataset.base_source_path}/palay_yield_new.csv",
+                        "history_spread": 0
+                    }
+                }
+            ]
+        },
+        "encoding": "label",
+        "region_key": "province",
+        "state_version": true,
+        "split_args": {
+            "by_year": true,
+            "train_size": 0.6,
+            "valid_size": 0.2
+        }
+    },
+    "evaluation": {
+        "components": [
+            {
+                "name": "BasicRegressionEvaluations"
+            }
+        ]
+    },
+    "model": {
+        "model": "rnn",
+        "args": {
+            "hidden_size": 64,
+            "num_layers": 1,
+            "dropout_rate": 0.1
+        }
+    },
+    "optimizer": {
+        "optimizer": "Adam",
+        "args": {
+            "lr": 0.01,
+            "weight_decay": 0.001
+        }
+    },
+    "scheduler": {
+        "scheduler": "StepLR",
+        "args": {
+            "step_size": 100,
+            "gamma": 0.99
+        }
+    }
+}

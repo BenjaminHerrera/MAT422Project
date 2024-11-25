@@ -1,0 +1,11 @@
+defaults:
+  - _self_
+  - locale/ipsum: test
+  - locale/lorem: test
+
+value_1: test value
+
+hydra:
+  output_subdir: null
+  run:
+    dir: .

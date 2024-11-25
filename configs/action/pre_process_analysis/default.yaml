@@ -1,0 +1,9 @@
+dataset_path: "${output_path}/dataset_compilation___1"
+specifics:
+  regional_col_name: ["Province"] 
+plot_sizes:
+  overtime: [40, 24]
+  distribution: [10, 6]
+analysis:
+  overtime: true
+  distribution: true

@@ -1,0 +1,4 @@
+defaults:
+  - ../test
+
+deep_value: test
